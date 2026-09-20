@@ -22,27 +22,89 @@
   button:focus-visible, a:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 1px solid #1C1C1A; outline-offset: 4px; }
   select.cm-sel { appearance: none; -webkit-appearance: none; background: transparent; border: 0; border-bottom: 1px solid #1C1C1A; border-radius: 0; font-family: Archivo, sans-serif; font-size: 13px; letter-spacing: 0.06em; color: #1C1C1A; padding: 0 22px 8px 0; width: 100%; cursor: pointer; }
   select.cm-sel:hover { color: #8C8A85; border-bottom-color: #8C8A85; }
+
+  /* ─────────── Responsive ─────────── */
+  :root { --pad: 7vw; --gap: 3vw; --gapw: 4vw; }
+
+  /* Tablet vertical y menores: las columnas con canto y sangría lateral se apilan */
+  @media (max-width: 899px) {
+    :root { --pad: 40px; --gap: 26px; --gapw: 26px; }
+    [data-r="plats"] { grid-template-columns: 1fr !important; }
+    [data-r="col"] {
+      padding-left: 0 !important; padding-right: 0 !important;
+      border-right: 0 !important;
+      padding-top: 52px !important; padding-bottom: 52px !important;
+    }
+    [data-r="plats"] > [data-r="col"] + [data-r="col"] { border-top: 1px solid #E4E2DC; }
+    [data-r="span2"] { grid-column: auto !important; }
+    [data-r="arthead"] { grid-template-columns: 1fr !important; gap: 34px !important; }
+    [data-r="obrapanel"] { padding-top: 26px !important; }
+    [data-r="iso-plat"] { height: 72px !important; }
+    [data-r="iso-cat"] { height: 62px !important; }
+    [data-r="iso-foot"] { height: 76px !important; }
+  }
+
+  /* Tablet: el pie respira mejor en dos columnas que en cuatro apretadas */
+  @media (min-width: 600px) and (max-width: 899px) {
+    footer > div { grid-template-columns: repeat(2, 1fr) !important; gap: 44px 40px !important; }
+    /* los cuatro datos del artista cuadran 2x2, no 3+1 */
+    [data-r="ficha"] { grid-template-columns: repeat(2, 1fr) !important; gap: 34px 40px !important; }
+  }
+
+  /* Móvil */
+  @media (max-width: 599px) {
+    :root { --pad: 24px; --gap: 18px; --gapw: 18px; }
+    [data-r="col"] { padding-top: 44px !important; padding-bottom: 44px !important; }
+    [data-r="iso-plat"] { height: 60px !important; margin-bottom: 26px !important; }
+    [data-r="iso-cat"] { height: 54px !important; }
+    [data-r="iso-foot"] { height: 64px !important; }
+    [data-r="iso-head"] { height: 36px !important; }
+    /* el header no debe comerse la pantalla */
+    [data-cm-header] > div { padding-top: 12px !important; padding-bottom: 12px !important; min-height: 0 !important; gap: 12px 18px !important; }
+    [data-cm-header] nav { gap: 10px 20px !important; width: 100%; }
+    [data-r="search"] { flex: 1 1 110px; width: auto !important; min-width: 90px; }
+    footer > div { grid-template-columns: 1fr 1fr !important; gap: 34px 24px !important; }
+    /* nav de marca en una sola línea: el buscador cede ancho antes que romper */
+    [data-cm-header] nav { flex-wrap: nowrap !important; gap: 0 14px !important; }
+    [data-r="navsep"] { display: none !important; }
+    [data-r="naviso"] { margin-left: auto; flex: none; }
+    [data-r="naviso"] img { height: 26px !important; }
+    [data-r="search"] { flex: 1 1 auto; width: auto !important; min-width: 64px; }
+    [data-cm-header] nav > span { white-space: nowrap; }
+  }
+
+  /* Móvil angosto: el titular de portada no debe partirse en sílabas */
+  @media (max-width: 380px) {
+    :root { --pad: 20px; }
+  }
+
+  /* Áreas táctiles: el dedo pide 44px, y en iOS menos de 16px dispara zoom al enfocar */
+  @media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+    select.cm-sel { font-size: 16px; min-height: 44px; padding-bottom: 12px; }
+    [data-r="search"] { font-size: 16px !important; letter-spacing: 0.02em !important; text-transform: none !important; min-height: 40px; padding-bottom: 8px; }
+    * { -webkit-tap-highlight-color: rgba(28,28,26,0.06); }
+  }
 </style>
 </helmet>
 
 <div style="min-height: 100vh; background: #FAFAF8">
 
   <header data-cm-header="1" style="position: sticky; top: 0; z-index: 40; background: #FAFAF8; border-bottom: 1px solid #E4E2DC">
-    <div style="max-width: 1280px; margin: 0 auto; padding: 16px 7vw; min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 16px 36px; flex-wrap: wrap">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 16px var(--pad); min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 16px 36px; flex-wrap: wrap">
       <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0; cursor: pointer" style-hover="opacity: 0.68" onClick="{{ goHeaderHome }}">
-        <sc-if value="{{ isoCasa }}" hint-placeholder-val="{{ true }}"><img src="assets/iso-casa.png" alt="" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
-        <sc-if value="{{ isoLienzo }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-lienzo.png" alt="" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
-        <sc-if value="{{ isoPentagrama }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-pentagrama.png" alt="" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
-        <sc-if value="{{ isoAlabastro }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-alabastro.png" alt="" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
+        <sc-if value="{{ isoCasa }}" hint-placeholder-val="{{ true }}"><img src="assets/iso-casa.png" alt="" data-r="iso-head" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
+        <sc-if value="{{ isoLienzo }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-lienzo.png" alt="" data-r="iso-head" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
+        <sc-if value="{{ isoPentagrama }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-pentagrama.png" alt="" data-r="iso-head" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
+        <sc-if value="{{ isoAlabastro }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-alabastro.png" alt="" data-r="iso-head" style="height: 46px; width: auto; display: block; mix-blend-mode: darken"></sc-if>
         <span style="font-family: Newsreader, serif; font-weight: 300; font-size: 19px; line-height: 1; letter-spacing: 0.3em; margin-right: -0.3em; text-transform: uppercase; white-space: nowrap">{{ headerName }}</span>
       </div>
       <sc-if value="{{ inBrand }}" hint-placeholder-val="{{ false }}">
         <nav style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px 30px; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #8C8A85">
           <span style="cursor: pointer; padding-bottom: 4px; border-bottom: 1px solid {{ tabObraRule }}; color: {{ tabObraInk }}" style-hover="color: #1C1C1A" onClick="{{ showObra }}">Obra</span>
           <span style="cursor: pointer; padding-bottom: 4px; border-bottom: 1px solid {{ tabArtRule }}; color: {{ tabArtInk }}" style-hover="color: #1C1C1A" onClick="{{ showArtistas }}">Artistas</span>
-          <input type="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Buscar" style="appearance: none; background: transparent; border: 0; border-bottom: 1px solid #E4E2DC; border-radius: 0; font-family: Archivo, sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #1C1C1A; padding: 0 0 5px; width: 120px; outline-offset: 4px">
-          <span style="width: 1px; height: 16px; background: #E4E2DC; flex: none"></span>
-          <span title="Casa Mecenas" style="cursor: pointer; display: flex; align-items: center; opacity: 0.65" style-hover="opacity: 1" onClick="{{ goCasa }}">
+          <input type="search" data-r="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Buscar" style="appearance: none; background: transparent; border: 0; border-bottom: 1px solid #E4E2DC; border-radius: 0; font-family: Archivo, sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #1C1C1A; padding: 0 0 5px; width: 120px; outline-offset: 4px">
+          <span data-r="navsep" style="width: 1px; height: 16px; background: #E4E2DC; flex: none"></span>
+          <span data-r="naviso" title="Casa Mecenas" style="cursor: pointer; display: flex; align-items: center; opacity: 0.65" style-hover="opacity: 1" onClick="{{ goCasa }}">
             <img src="assets/iso-casa.png" alt="Casa Mecenas" style="height: 34px; width: auto; display: block; mix-blend-mode: darken">
           </span>
         </nav>
@@ -61,30 +123,30 @@
   <!-- ══════════ HOME INSTITUCIONAL ══════════ -->
   <sc-if value="{{ isCasa }}" hint-placeholder-val="{{ true }}">
   <div>
-    <section style="max-width: 1280px; margin: 0 auto; padding: 13vh 7vw 10vh">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 13vh var(--pad) 10vh">
       <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(32px, 5vw, 74px); line-height: 1.08; letter-spacing: -0.015em; margin: 0; max-width: 17ch; text-wrap: pretty">Los artistas más importantes de cada región, sostenidos.</p>
       <p style="font-size: 17px; line-height: 1.65; color: #8C8A85; max-width: 46ch; margin: 40px 0 0">Tres plataformas independientes, una por disciplina, bajo una sola institución. Representación de largo plazo, becas y retiros, y la venta directa de su obra.</p>
     </section>
 
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 0 7vw">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr))">
-          <div style="padding: 58px 40px 66px 0; cursor: pointer; border-right: 1px solid #E4E2DC" style-hover="background: #F4F3F0" onClick="{{ goLienzo }}">
-            <img src="assets/iso-lienzo.png" alt="" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 0 var(--pad)">
+        <div data-r="plats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr))">
+          <div data-r="col" style="padding: 58px 40px 66px 0; cursor: pointer; border-right: 1px solid #E4E2DC" style-hover="background: #F4F3F0" onClick="{{ goLienzo }}">
+            <img src="assets/iso-lienzo.png" alt="" data-r="iso-plat" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
             <div style="font-family: Newsreader, serif; font-size: clamp(19px, 2vw, 27px); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap">Lienzo</div>
             <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-top: 13px">Pintura</div>
             <p style="font-size: 15px; line-height: 1.6; color: #8C8A85; margin: 24px 0 0; max-width: 28ch">El marco está vacío a propósito. El color lo pone el cuadro.</p>
             <div style="display: inline-block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; border-bottom: 1px solid #1C1C1A; padding-bottom: 5px; margin-top: 30px">Entrar a Lienzo</div>
           </div>
-          <div style="padding: 58px 40px 66px; cursor: pointer; border-right: 1px solid #E4E2DC" style-hover="background: #F4F3F0" onClick="{{ goPentagrama }}">
-            <img src="assets/iso-pentagrama.png" alt="" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
+          <div data-r="col" style="padding: 58px 40px 66px; cursor: pointer; border-right: 1px solid #E4E2DC" style-hover="background: #F4F3F0" onClick="{{ goPentagrama }}">
+            <img src="assets/iso-pentagrama.png" alt="" data-r="iso-plat" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
             <div style="font-family: Newsreader, serif; font-size: clamp(19px, 2vw, 27px); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap">Pentagrama</div>
             <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-top: 13px">Música</div>
             <p style="font-size: 15px; line-height: 1.6; color: #8C8A85; margin: 24px 0 0; max-width: 28ch">Cinco líneas y una barra de compás: el punto donde algo sucede.</p>
             <div style="display: inline-block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; border-bottom: 1px solid #1C1C1A; padding-bottom: 5px; margin-top: 30px">Entrar a Pentagrama</div>
           </div>
-          <div style="padding: 58px 0 66px 40px; cursor: pointer" style-hover="background: #F4F3F0" onClick="{{ goAlabastro }}">
-            <img src="assets/iso-alabastro.png" alt="" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
+          <div data-r="col" style="padding: 58px 0 66px 40px; cursor: pointer" style-hover="background: #F4F3F0" onClick="{{ goAlabastro }}">
+            <img src="assets/iso-alabastro.png" alt="" data-r="iso-plat" style="height: 88px; width: auto; display: block; mix-blend-mode: darken; margin: 0 0 36px -12px">
             <div style="font-family: Newsreader, serif; font-size: clamp(19px, 2vw, 27px); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap">Alabastro</div>
             <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-top: 13px">Escultura</div>
             <p style="font-size: 15px; line-height: 1.6; color: #8C8A85; margin: 24px 0 0; max-width: 28ch">La piedra antes de tallarse. El material en estado de posibilidad.</p>
@@ -95,7 +157,7 @@
     </section>
 
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 10vh 7vw">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 10vh var(--pad)">
         <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 48px">Cómo sostenemos a los artistas</div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 42px 40px">
           <div style="border-top: 1px solid #1C1C1A; padding-top: 22px">
@@ -122,14 +184,14 @@
     </section>
 
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 0 7vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
-        <div style="padding: 9vh 44px 9vh 0; border-right: 1px solid #E4E2DC">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 0 var(--pad); display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))" data-r="plats">
+        <div data-r="col" style="padding: 9vh 44px 9vh 0; border-right: 1px solid #E4E2DC">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 26px">Conviértete en mecenas</div>
           <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.2; margin: 0 0 22px; max-width: 20ch">Mecenas es quien sostiene económicamente al artista.</p>
           <p style="font-size: 16px; line-height: 1.7; color: #8C8A85; margin: 0 0 28px; max-width: 42ch">Las becas y los retiros se financian con patrocinio. El patrocinio es deducible y se reconoce públicamente.</p>
           <span style="display: inline-block; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid #1C1C1A; padding-bottom: 5px; cursor: pointer" style-hover="color: #8C8A85; border-bottom-color: #8C8A85" onClick="{{ goSerMecenas }}">Ser mecenas</span>
         </div>
-        <div style="padding: 9vh 0 9vh 44px">
+        <div data-r="col" style="padding: 9vh 0 9vh 44px">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 26px">Para artistas</div>
           <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.2; margin: 0 0 22px; max-width: 20ch">El criterio de entrada es uno solo.</p>
           <p style="font-size: 16px; line-height: 1.7; color: #8C8A85; margin: 0 0 28px; max-width: 42ch">Los artistas más importantes de su región en su disciplina. Esa restricción es lo que da valor al artista que acepta y al comprador que adquiere.</p>
@@ -145,17 +207,17 @@
   <div>
     <sc-if value="{{ catHasBrand }}" hint-placeholder-val="{{ false }}">
       <div>
-        <section style="max-width: 1280px; margin: 0 auto; padding: 9vh 7vw 7vh">
-          <sc-if value="{{ isoLienzo }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-lienzo.png" alt="" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
-          <sc-if value="{{ isoPentagrama }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-pentagrama.png" alt="" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
-          <sc-if value="{{ isoAlabastro }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-alabastro.png" alt="" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
+        <section style="max-width: 1280px; margin: 0 auto; padding: 9vh var(--pad) 7vh">
+          <sc-if value="{{ isoLienzo }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-lienzo.png" alt="" data-r="iso-cat" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
+          <sc-if value="{{ isoPentagrama }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-pentagrama.png" alt="" data-r="iso-cat" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
+          <sc-if value="{{ isoAlabastro }}" hint-placeholder-val="{{ false }}"><img src="assets/iso-alabastro.png" alt="" data-r="iso-cat" style="height: 74px; width: auto; display: block; mix-blend-mode: darken; margin-bottom: 30px"></sc-if>
           <div style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(34px, 5.4vw, 74px); letter-spacing: 0.16em; text-transform: uppercase; line-height: 1">{{ catName }}</div>
           <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(22px, 2.6vw, 34px); line-height: 1.2; margin: 40px 0 0; max-width: 22ch">{{ catManifesto }}</p>
         </section>
       </div>
     </sc-if>
     <sc-if value="{{ catIsAll }}" hint-placeholder-val="{{ true }}">
-      <section style="max-width: 1280px; margin: 0 auto; padding: 9vh 7vw 7vh">
+      <section style="max-width: 1280px; margin: 0 auto; padding: 9vh var(--pad) 7vh">
         <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 26px">Catálogo</div>
         <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(30px, 4.4vw, 60px); line-height: 1.1; margin: 0; max-width: 18ch">Explora el catálogo completo</p>
       </section>
@@ -163,7 +225,7 @@
 
     <sc-if value="{{ tabIsArtistas }}" hint-placeholder-val="{{ false }}">
       <section style="border-top: 1px solid #E4E2DC">
-        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw 11vh">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad) 11vh">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 44px">{{ rosterLabel }}</div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 34px 40px">
             <sc-for list="{{ roster }}" as="r" hint-placeholder-count="3">
@@ -185,7 +247,7 @@
     <sc-if value="{{ tabIsObra }}" hint-placeholder-val="{{ true }}">
     <div>
     <section style="border-top: 1px solid #E4E2DC; border-bottom: 1px solid #E4E2DC; background: #FAFAF8">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 26px 7vw 24px">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 26px var(--pad) 24px">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px 30px; align-items: end">
           <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
             <div>
@@ -208,8 +270,8 @@
     </section>
 
     <section>
-      <div style="max-width: 1280px; margin: 0 auto; padding: 7vh 7vw 11vh">
-        <div style="display: grid; grid-template-columns: {{ gridCols }}; gap: 7vh 3vw">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 7vh var(--pad) 11vh">
+        <div style="display: grid; grid-template-columns: {{ gridCols }}; gap: 7vh var(--gap)">
           <sc-for list="{{ results }}" as="w" hint-placeholder-count="9">
             <div style="cursor: pointer" onClick="{{ w.open }}" onMouseEnter="{{ w.enter }}" onMouseLeave="{{ w.leave }}">
               <div style="position: relative; aspect-ratio: {{ w.ratio }}; background: {{ w.bg }}; box-shadow: {{ w.halo }}; transition: box-shadow 260ms ease; opacity: {{ w.dim }}">
@@ -246,8 +308,8 @@
       </section>
     </sc-if>
 
-    <section style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw 0">
-      <div style="display: grid; grid-template-columns: {{ art.headCols }}; gap: 48px">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad) 0">
+      <div data-r="arthead" style="display: grid; grid-template-columns: {{ art.headCols }}; gap: 48px">
         <div>
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; cursor: pointer" onClick="{{ art.goCat }}">{{ art.cat }} · {{ art.region }}</div>
           <h1 style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(38px, 5.6vw, 84px); line-height: 1.02; margin: 20px 0 0; letter-spacing: -0.015em">{{ art.name }}</h1>
@@ -266,8 +328,8 @@
       </div>
     </section>
 
-    <section style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 34px">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad)">
+      <div data-r="ficha" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 34px">
         <div>
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; margin-bottom: 13px">{{ art.fichaLabel }}</div>
           <div style="font-family: Newsreader, serif; font-size: 22px">{{ art.ficha }}</div>
@@ -289,9 +351,9 @@
 
     <sc-if value="{{ art.modHistoria }}" hint-placeholder-val="{{ false }}">
       <section style="border-top: 1px solid {{ art.rule }}">
-        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 48px">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 48px">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6">Su historia</div>
-          <div style="grid-column: span 2; min-width: 0">
+          <div data-r="span2" style="grid-column: span 2; min-width: 0">
             <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.32; margin: 0 0 26px; max-width: 30ch">{{ art.historiaLead }}</p>
             <p style="font-size: 16px; line-height: 1.75; opacity: 0.78; margin: 0; max-width: 58ch">{{ art.historia }}</p>
           </div>
@@ -300,9 +362,9 @@
     </sc-if>
 
     <section style="border-top: 1px solid {{ art.rule }}">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad)">
         <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; margin-bottom: 42px">Obra</div>
-        <div style="display: grid; grid-template-columns: {{ art.galleryCols }}; gap: 6vh 3vw">
+        <div style="display: grid; grid-template-columns: {{ art.galleryCols }}; gap: 6vh var(--gap)">
           <sc-for list="{{ art.works }}" as="w" hint-placeholder-count="3">
             <div style="cursor: pointer" onClick="{{ w.open }}">
               <div style="aspect-ratio: {{ w.ratio }}; background: {{ w.bg }}; position: relative">
@@ -319,14 +381,14 @@
 
     <sc-if value="{{ art.modBioFinal }}" hint-placeholder-val="{{ false }}">
       <section style="border-top: 1px solid {{ art.rule }}">
-        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh 7vw">
-          <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, 3vw, 40px); line-height: 1.24; margin: 0; max-width: 26ch">{{ art.bio }}</p>
+        <div style="max-width: 1280px; margin: 0 auto; padding: 8vh var(--pad)">
+          <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, var(--gap), 40px); line-height: 1.24; margin: 0; max-width: 26ch">{{ art.bio }}</p>
         </div>
       </section>
     </sc-if>
 
     <section style="border-top: 1px solid {{ art.rule }}">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 7vh 7vw 10vh">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 7vh var(--pad) 10vh">
         <span style="display: inline-block; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid {{ art.accent }}; padding-bottom: 5px; cursor: pointer" onClick="{{ art.goCat }}">Volver a {{ art.cat }}</span>
       </div>
     </section>
@@ -336,7 +398,7 @@
   <!-- ══════════ FICHA DE OBRA ══════════ -->
   <sc-if value="{{ isObra }}" hint-placeholder-val="{{ false }}">
   <div style="background: {{ obra.pageBg }}; color: {{ obra.ink }}">
-    <section style="max-width: 1280px; margin: 0 auto; padding: 5vh 7vw 0">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 5vh var(--pad) 0">
       <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.6">
         <span style="cursor: pointer" onClick="{{ obra.goCat }}">{{ obra.cat }}</span>
         <span style="opacity: 0.5"> / </span>
@@ -346,13 +408,13 @@
       </div>
     </section>
 
-    <section style="max-width: 1280px; margin: 0 auto; padding: 5vh 7vw 0">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4vw">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 5vh var(--pad) 0">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--gapw)">
         <div style="aspect-ratio: {{ obra.ratio }}; background: {{ obra.imgBg }}; position: relative">
           <image-slot id="{{ obra.slotId }}" shape="rect" fit="cover" placeholder="Obra en alta resolución"></image-slot>
         </div>
-        <div style="align-self: start; padding-top: 6px">
-          <h1 style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 1.08; margin: 0 0 10px; letter-spacing: -0.01em">{{ obra.title }}</h1>
+        <div data-r="obrapanel" style="align-self: start; padding-top: 6px">
+          <h1 style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(32px, var(--gapw), 56px); line-height: 1.08; margin: 0 0 10px; letter-spacing: -0.01em">{{ obra.title }}</h1>
           <div style="font-family: Newsreader, serif; font-size: 22px; opacity: 0.8; cursor: pointer; margin-bottom: 38px" onClick="{{ obra.goArtist }}">{{ obra.artist }}</div>
 
           <div style="display: grid; gap: 0; border-top: 1px solid {{ obra.rule }}">
@@ -379,10 +441,10 @@
       </div>
     </section>
 
-    <section style="max-width: 1280px; margin: 0 auto; padding: 9vh 7vw 10vh">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 9vh var(--pad) 10vh">
       <div style="border-top: 1px solid {{ obra.rule }}; padding-top: 42px">
         <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; margin-bottom: 36px">Más de {{ obra.artist }}</div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 4vh 3vw">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 4vh var(--gap)">
           <sc-for list="{{ obra.siblings }}" as="w" hint-placeholder-count="2">
             <div style="cursor: pointer" onClick="{{ w.open }}">
               <div style="aspect-ratio: {{ w.ratio }}; background: {{ w.bg }}; position: relative">
@@ -404,15 +466,15 @@
   <!-- ══════════ MECENAZGO ══════════ -->
   <sc-if value="{{ isMecenazgo }}" hint-placeholder-val="{{ false }}">
   <div>
-    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh 7vw 8vh">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh var(--pad) 8vh">
       <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 30px">Mecenazgo</div>
       <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(30px, 4.6vw, 66px); line-height: 1.1; margin: 0; max-width: 18ch">El dinero que sostiene el trabajo, y de dónde viene.</p>
       <p style="font-size: 17px; line-height: 1.7; color: #8C8A85; max-width: 50ch; margin: 38px 0 0">La actividad comercial representa y vende. La asociación civil otorga becas, recibe patrocinios y sostiene la preservación. Son dos operaciones separadas bajo una misma marca pública.</p>
     </section>
 
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 0 7vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
-        <div style="padding: 9vh 44px 9vh 0; border-right: 1px solid #E4E2DC">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 0 var(--pad); display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))" data-r="plats">
+        <div data-r="col" style="padding: 9vh 44px 9vh 0; border-right: 1px solid #E4E2DC">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 26px">Becas</div>
           <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.2; margin: 0 0 24px; max-width: 18ch">Qué cubre una beca</p>
           <div style="display: grid; gap: 0; border-top: 1px solid #E4E2DC; max-width: 44ch">
@@ -422,7 +484,7 @@
           </div>
           <p style="font-size: 15px; line-height: 1.7; color: #8C8A85; margin: 26px 0 0; max-width: 42ch">Criterio de selección y testimonios de artistas apoyados, pendientes de redactar.</p>
         </div>
-        <div style="padding: 9vh 0 9vh 44px">
+        <div data-r="col" style="padding: 9vh 0 9vh 44px">
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 26px">Ser mecenas</div>
           <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.2; margin: 0 0 24px; max-width: 18ch">Qué recibe quien patrocina</p>
           <div style="display: grid; gap: 0; border-top: 1px solid #E4E2DC; max-width: 44ch">
@@ -443,13 +505,13 @@
   <!-- ══════════ APLICAR ══════════ -->
   <sc-if value="{{ isAplicar }}" hint-placeholder-val="{{ false }}">
   <div>
-    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh 7vw 8vh">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh var(--pad) 8vh">
       <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 30px">Para artistas</div>
       <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(30px, 4.6vw, 66px); line-height: 1.1; margin: 0; max-width: 18ch">Aplicar a Casa Mecenas</p>
       <p style="font-size: 17px; line-height: 1.7; color: #8C8A85; max-width: 50ch; margin: 38px 0 0">Entra un artista por región y disciplina. Quién define ese criterio en la práctica está pendiente de resolver.</p>
     </section>
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 9vh 7vw">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 9vh var(--pad)">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 42px 40px">
           <div style="border-top: 1px solid #1C1C1A; padding-top: 22px">
             <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 14px">01</div>
@@ -478,16 +540,16 @@
   <!-- ══════════ SOBRE ══════════ -->
   <sc-if value="{{ isSobre }}" hint-placeholder-val="{{ false }}">
   <div>
-    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh 7vw 8vh">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 11vh var(--pad) 8vh">
       <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85; margin-bottom: 30px">Sobre Casa Mecenas</div>
       <p style="font-family: Newsreader, serif; font-weight: 300; font-size: clamp(30px, 4.6vw, 66px); line-height: 1.1; margin: 0; max-width: 20ch">Una galería vende obra. Casa Mecenas sostiene a quien la hace.</p>
     </section>
     <section style="border-top: 1px solid #E4E2DC">
-      <div style="max-width: 1280px; margin: 0 auto; padding: 9vh 7vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 48px">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 9vh var(--pad); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 48px">
         <div>
           <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C8A85">Diferenciador</div>
         </div>
-        <div style="grid-column: span 2; min-width: 0">
+        <div data-r="span2" style="grid-column: span 2; min-width: 0">
           <p style="font-size: 17px; line-height: 1.75; color: #8C8A85; margin: 0 0 22px; max-width: 56ch">Una galería tradicional expone y cobra comisión. Casa Mecenas firma representación de largo plazo, gestiona la presencia del artista, financia su material y sus retiros, y le da una página propia donde su obra se compra directamente.</p>
           <p style="font-size: 17px; line-height: 1.75; color: #8C8A85; margin: 0; max-width: 56ch">El manifiesto extendido está pendiente de redactar.</p>
         </div>
@@ -499,9 +561,9 @@
   </main>
 
   <footer style="border-top: 1px solid #E4E2DC; background: #FAFAF8">
-    <div style="max-width: 1280px; margin: 0 auto; padding: 7vh 7vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; align-items: start">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 7vh var(--pad); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; align-items: start">
       <div>
-        <img src="assets/iso-casa.png" alt="Casa Mecenas" style="height: 96px; width: auto; display: block; mix-blend-mode: darken">
+        <img src="assets/iso-casa.png" alt="Casa Mecenas" data-r="iso-foot" style="height: 96px; width: auto; display: block; mix-blend-mode: darken">
       </div>
       <div style="display: flex; flex-direction: column; gap: 11px; font-size: 13px; color: #8C8A85">
         <span style="cursor: pointer" style-hover="color: #1C1C1A" onClick="{{ goCasa }}">Casa Mecenas</span>
