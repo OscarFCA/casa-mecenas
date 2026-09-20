@@ -5,7 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Casa Mecenas</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/casa.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/casa-180.png">
 <script src="./support.js"></script>
+<script>
+// El favicon sigue a la plataforma en la que está el visitante: el header ya
+// muestra el isotipo del contexto, así que basta con seguirlo.
+(function () {
+  var KEYS = { casa: 1, lienzo: 1, pentagrama: 1, alabastro: 1 };
+  var current = '';
+  function apply(key) {
+    if (key === current) return;
+    current = key;
+    var icon = document.querySelector('link[rel="icon"]');
+    var touch = document.querySelector('link[rel="apple-touch-icon"]');
+    if (icon) icon.href = 'assets/favicon/' + key + '.png?v=1';
+    if (touch) touch.href = 'assets/favicon/' + key + '-180.png?v=1';
+  }
+  function sync() {
+    var img = document.querySelector('[data-cm-header] img[data-r="iso-head"]');
+    var m = img && (img.getAttribute('src') || '').match(/iso-([a-z]+)\.png/);
+    apply(m && KEYS[m[1]] ? m[1] : 'casa');
+  }
+  function start() {
+    sync();
+    new MutationObserver(sync).observe(document.body, {
+      subtree: true, childList: true, attributes: true, attributeFilter: ['src']
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
 </head>
 <body>
 <x-dc>
